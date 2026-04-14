@@ -88,6 +88,34 @@ button:disabled {
     gap: 0.5rem;
 }
 
+.table-wrap {
+    margin-top: 1rem;
+    overflow: auto;
+    border: 1px solid rgba(22, 38, 53, 0.1);
+    border-radius: 10px;
+}
+
+.dtc-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 520px;
+}
+
+.dtc-table th,
+.dtc-table td {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid rgba(22, 38, 53, 0.08);
+}
+
+.dtc-table thead {
+    background: var(--accent-soft);
+}
+
+.empty-cell {
+    color: rgba(22, 38, 53, 0.65);
+}
+
 @media (max-width: 720px) {
     .page-shell {
         padding: 1rem;

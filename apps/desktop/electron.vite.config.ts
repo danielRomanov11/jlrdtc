@@ -8,6 +8,9 @@ export default defineConfig({
             outDir: "out/main",
             lib: {
                 entry: resolve("src/main/main.ts")
+            },
+            rollupOptions: {
+                external: ["better-sqlite3"]
             }
         },
         resolve: {

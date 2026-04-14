@@ -16,6 +16,26 @@ enum Request {
     VehicleReadVin { requestId: String, adapterId: String },
     #[serde(rename = "session.open")]
     SessionOpen { requestId: String, adapterId: String },
+    #[serde(rename = "diag.scanModules")]
+    DiagScanModules {
+        requestId: String,
+        adapterId: String,
+        protocolHint: Option<String>,
+    },
+    #[serde(rename = "diag.readDtcs")]
+    DiagReadDtcs {
+        requestId: String,
+        adapterId: String,
+        module: String,
+    },
+    #[serde(rename = "diag.clearDtcs")]
+    DiagClearDtcs {
+        requestId: String,
+        adapterId: String,
+        module: Option<String>,
+        clearAll: bool,
+        confirmed: bool,
+    },
 }
 
 #[derive(Serialize)]
@@ -81,6 +101,82 @@ fn handle_request(wrapper: &J2534Wrapper, request: Request) -> Response {
                 payload: serde_json::json!({
                     "adapterId": channel.adapter_id,
                     "channelId": channel.channel_id
+                }),
+                timestamp: now_ms(),
+                error: None,
+            },
+            Err(err) => Response {
+                requestId,
+                ok: false,
+                payload: serde_json::json!({}),
+                timestamp: now_ms(),
+                error: Some(err.to_string()),
+            },
+        },
+        Request::DiagScanModules {
+            requestId,
+            adapterId,
+            protocolHint,
+        } => match wrapper.scan_modules(&adapterId, protocolHint.as_deref()) {
+            Ok(modules) => Response {
+                requestId,
+                ok: true,
+                payload: serde_json::json!({
+                    "modules": modules,
+                    "protocol": protocolHint.unwrap_or_else(|| "AUTO".to_string())
+                }),
+                timestamp: now_ms(),
+                error: None,
+            },
+            Err(err) => Response {
+                requestId,
+                ok: false,
+                payload: serde_json::json!({}),
+                timestamp: now_ms(),
+                error: Some(err.to_string()),
+            },
+        },
+        Request::DiagReadDtcs {
+            requestId,
+            adapterId,
+            module,
+        } => match wrapper.read_dtcs(&adapterId, &module) {
+            Ok(dtcs) => Response {
+                requestId,
+                ok: true,
+                payload: serde_json::json!({
+                    "module": module,
+                    "dtcs": dtcs
+                }),
+                timestamp: now_ms(),
+                error: None,
+            },
+            Err(err) => Response {
+                requestId,
+                ok: false,
+                payload: serde_json::json!({}),
+                timestamp: now_ms(),
+                error: Some(err.to_string()),
+            },
+        },
+        Request::DiagClearDtcs {
+            requestId,
+            adapterId,
+            module,
+            clearAll,
+            confirmed,
+        } => match wrapper.clear_dtcs(&adapterId, module.as_deref(), clearAll, confirmed) {
+            Ok(detail) => Response {
+                requestId,
+                ok: true,
+                payload: serde_json::json!({
+                    "cleared": true,
+                    "scope": if clearAll {
+                        "ALL".to_string()
+                    } else {
+                        module.unwrap_or_else(|| "UNKNOWN_MODULE".to_string())
+                    },
+                    "detail": detail
                 }),
                 timestamp: now_ms(),
                 error: None,

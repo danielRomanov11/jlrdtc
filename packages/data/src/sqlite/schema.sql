@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS pid_definition (
 
 CREATE TABLE IF NOT EXISTS diagnostic_session (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    adapter_id TEXT NOT NULL,
     vin TEXT,
     vehicle_year INTEGER,
     started_at TEXT NOT NULL,
