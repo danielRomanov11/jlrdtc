@@ -1,0 +1,22 @@
+{
+    "name": "jlrdtc",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Windows-first Land Rover diagnostic desktop app using Electron, Rust J2534 service, and SQLite.",
+    "packageManager": "npm@10.8.2",
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "dev": "concurrently -n desktop,j2534 -c cyan,green \"npm run dev -w apps/desktop\" \"npm run dev -w packages/j2534-service\"",
+        "build": "npm run build -w apps/desktop && npm run build -w packages/shared && npm run build -w packages/diag-core && npm run build -w packages/data",
+        "typecheck": "npm run typecheck -w packages/shared && npm run typecheck -w packages/diag-core && npm run typecheck -w packages/data && npm run typecheck -w apps/desktop",
+        "lint": "npm run lint -ws --if-present",
+        "test": "npm run test -ws --if-present"
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.2",
+        "typescript": "^5.6.3"
+    }
+}

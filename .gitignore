@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+out/
+.vscode/
+*.log
+*.db
+*.sqlite
+*.sqlite3
+.DS_Store
+coverage/
+target/
+Cargo.lock
+.env
+.env.*
+!.env.example

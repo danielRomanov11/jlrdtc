@@ -1,0 +1,9 @@
+{
+    "name": "@jlrdtc/j2534-service",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "cargo run",
+        "build": "cargo build --release"
+    }
+}
